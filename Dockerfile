@@ -1,4 +1,4 @@
-FROM rust:bullseye AS rustbuilder
+FROM rust:bookworm AS rustbuilder
 ARG MITHRIL_VERSION=2335.0
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
 WORKDIR /code
