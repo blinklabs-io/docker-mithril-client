@@ -1,5 +1,5 @@
 FROM rust:bookworm AS rustbuilder
-ARG MITHRIL_VERSION=2335.0
+ARG MITHRIL_VERSION=2337.0
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
 WORKDIR /code
 RUN echo "Building tags/${MITHRIL_VERSION}..." \
@@ -11,7 +11,7 @@ RUN echo "Building tags/${MITHRIL_VERSION}..." \
     && cargo build --release -p mithril-client
 
 FROM debian:bookworm-slim as mithrill-client
-COPY --from=rustbuilder /code/mithril/target/release/mithril-client /usr/local/bin/
+COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
 RUN apt-get update -y \
     && apt-get install -y \
        ca-certificates \
@@ -20,4 +20,4 @@ RUN apt-get update -y \
        sqlite3 \
        wget \
     && rm -rf /var/lib/apt/lists/*
-ENTRYPOINT ["/usr/local/bin/mithril-client"]
+ENTRYPOINT ["/bin/mithril-client"]
