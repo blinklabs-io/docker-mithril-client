@@ -6,7 +6,7 @@ RUN echo "Building tags/${MITHRIL_VERSION}..." \
     && git clone https://github.com/input-output-hk/mithril.git --depth 1 -b ${MITHRIL_VERSION} \
     && cd mithril \
     && git checkout tags/${MITHRIL_VERSION} \
-    && cargo build --release -p mithril-client-cli
+    && cargo build --features portable --release -p mithril-client-cli
 
 FROM debian:bookworm-slim as mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
