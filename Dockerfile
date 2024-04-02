@@ -1,5 +1,5 @@
 FROM rust:bookworm AS rustbuilder
-ARG MITHRIL_VERSION=2408.0
+ARG MITHRIL_VERSION=2412.0
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
 WORKDIR /code
 RUN echo "Building tags/${MITHRIL_VERSION}..." \
@@ -10,6 +10,7 @@ RUN echo "Building tags/${MITHRIL_VERSION}..." \
 
 FROM debian:bookworm-slim as mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
+COPY config/ /opt/cardano/config/
 RUN apt-get update -y \
     && apt-get install -y \
        ca-certificates \
