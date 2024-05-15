@@ -1,12 +1,12 @@
 FROM rust:bookworm AS rustbuilder
-ARG MITHRIL_VERSION=2412.0
+ARG MITHRIL_VERSION=2418.1
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
 WORKDIR /code
 RUN echo "Building tags/${MITHRIL_VERSION}..." \
     && git clone https://github.com/input-output-hk/mithril.git --depth 1 -b ${MITHRIL_VERSION} \
     && cd mithril \
     && git checkout tags/${MITHRIL_VERSION} \
-    && cargo build --features portable --release -p mithril-client-cli
+    && cargo build --release -p mithril-client-cli
 
 FROM debian:bookworm-slim as mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
