@@ -1,5 +1,5 @@
 FROM rust:bookworm AS rustbuilder
-ARG MITHRIL_VERSION=2418.1
+ARG MITHRIL_VERSION=2423.0
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
 WORKDIR /code
 RUN echo "Building tags/${MITHRIL_VERSION}..." \
@@ -8,9 +8,11 @@ RUN echo "Building tags/${MITHRIL_VERSION}..." \
     && git checkout tags/${MITHRIL_VERSION} \
     && cargo build --release -p mithril-client-cli
 
+FROM ghcr.io/blinklabs-io/cardano-configs:20240515-2 as cardano-configs
+
 FROM debian:bookworm-slim as mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
-COPY config/ /opt/cardano/config/
+COPY --from=cardano-configs /config/ /opt/cardano/config/
 RUN apt-get update -y \
     && apt-get install -y \
        ca-certificates \
