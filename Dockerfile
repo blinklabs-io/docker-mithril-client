@@ -8,9 +8,9 @@ RUN echo "Building tags/${MITHRIL_VERSION}..." \
     && git checkout tags/${MITHRIL_VERSION} \
     && cargo build --release -p mithril-client-cli
 
-FROM ghcr.io/blinklabs-io/cardano-configs:20240725-1 as cardano-configs
+FROM ghcr.io/blinklabs-io/cardano-configs:20240725-1 AS cardano-configs
 
-FROM debian:bookworm-slim as mithril-client
+FROM debian:bookworm-slim AS mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
 COPY --from=cardano-configs /config/ /opt/cardano/config/
 RUN apt-get update -y \
