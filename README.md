@@ -1,2 +1,4 @@
 # docker-mithril-client
-Builds mithril-client from source on Debian
+
+Builds [mithril-client CLI](https://github.com/input-output-hk/mithril) from
+source on Debian.
