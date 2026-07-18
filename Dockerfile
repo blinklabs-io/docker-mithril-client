@@ -1,12 +1,16 @@
-FROM rust:bookworm AS rustbuilder
-ARG MITHRIL_VERSION=2617.0
+FROM rust:slim-bookworm AS rustbuilder
+# Can be a git tag or commit SHA
+# 0f6d54dd9c229104d0bfcca670d320266899f0ca (0.13.19)
+ARG MITHRIL_VERSION=0f6d54dd9c229104d0bfcca670d320266899f0ca
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
+RUN apt-get update && apt-get install -y --no-install-recommends git make gcc libc6-dev
 WORKDIR /code
-RUN echo "Building tags/${MITHRIL_VERSION}..." \
-    && git clone https://github.com/input-output-hk/mithril.git --depth 1 -b ${MITHRIL_VERSION} \
+RUN echo "Building ${MITHRIL_VERSION}..." \
+    && git clone --filter=blob:none https://github.com/input-output-hk/mithril.git \
     && cd mithril \
-    && git checkout tags/${MITHRIL_VERSION} \
-    && cargo build --release -p mithril-client-cli
+    && git checkout ${MITHRIL_VERSION} \
+    && cargo build --release -p mithril-client-cli \
+    && strip target/release/mithril-client
 
 FROM ghcr.io/blinklabs-io/cardano-configs:20260707-2 AS cardano-configs
 
@@ -14,11 +18,7 @@ FROM debian:bookworm-slim AS mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
 COPY --from=cardano-configs /config/ /opt/cardano/config/
 RUN apt-get update -y \
-    && apt-get install -y \
-       ca-certificates \
-       libssl3 \
-       llvm-14-runtime \
-       sqlite3 \
-       wget \
+    && apt-get install -y --no-install-recommends \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["/bin/mithril-client"]
