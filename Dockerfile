@@ -1,7 +1,7 @@
 FROM rust:slim-bookworm AS rustbuilder
 # Can be a git tag or commit SHA
-# 0f6d54dd9c229104d0bfcca670d320266899f0ca (0.13.19)
-ARG MITHRIL_VERSION=0f6d54dd9c229104d0bfcca670d320266899f0ca
+# 3f6cb73f491eb3195d02318643e40836fb093acc (0.13.20/2630.1-hotfix)
+ARG MITHRIL_VERSION=3f6cb73f491eb3195d02318643e40836fb093acc
 ENV MITHRIL_VERSION=${MITHRIL_VERSION}
 RUN apt-get update && apt-get install -y --no-install-recommends git make gcc libc6-dev
 WORKDIR /code
