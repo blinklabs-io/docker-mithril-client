@@ -12,7 +12,7 @@ RUN echo "Building ${MITHRIL_VERSION}..." \
     && cargo build --release -p mithril-client-cli \
     && strip target/release/mithril-client
 
-FROM ghcr.io/blinklabs-io/cardano-configs:20260910-2 AS cardano-configs
+FROM ghcr.io/blinklabs-io/cardano-configs:20260915-1 AS cardano-configs
 
 FROM debian:bookworm-slim AS mithril-client
 COPY --from=rustbuilder /code/mithril/target/release/mithril-client /bin/
